@@ -30,10 +30,9 @@ export default function Component() {
       dokumentasi: "https://docs.google.com/document/d/1b0fteH99bMJiRPfwAoUHEdANIE-LwFOxK7EK9KI1Dts/edit?usp=sharing"
     },
     {
-      title: "Task Management System",
-      description: "Collaborative project management tool with real-time updates and team features",
-      tech: ["React", "Express", "MongoDB"],
-      github: "https://github.com/yourusername/task-manager",
+      title: "CCTV Analytic",
+      description: "a web for counting vehicle. this project is private because NDA (Non-Disclosure Agreement). I can show the code in limited places",
+      tech: ["Golang", "React", "PostgreSQL"],
       demo: "https://task-manager-demo.example.com"
     },
     {
@@ -160,12 +159,14 @@ export default function Component() {
                     ))}
                   </div>
                     <div className="flex gap-2">
-                      <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" size="sm">
-                          <Github className="w-4 h-4 mr-1" />
-                          Code
-                        </Button>
-                      </Link>
+                      {project.github && (
+                        <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm">
+                            <Github className="w-4 h-4 mr-1" />
+                            Code
+                          </Button>
+                        </Link>
+                      )}
                       {project.demo && (
                         <Link href={project.demo} target="_blank" rel="noopener noreferrer">
                           <Button variant="outline" size="sm">
