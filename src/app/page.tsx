@@ -98,7 +98,7 @@ export default function Component() {
     {
       title: "Admin-Reviewer Module",
       description: "project admin and reviewer for SIPMAS (Research and Community Service Information System)",
-      tech: ["laravel", "MySQL"],
+      tech: ["Laravel", "MySQL"],
       github: "https://github.com/HengkerKucing/AdminReviewer-Module.git",
       dokumentasi: "https://docs.google.com/document/d/1T1gPkAoQ5pxwV4HXsPok4jD3Zn8eqVIep2cKJLAbmkY/edit?usp=sharing"
     },
