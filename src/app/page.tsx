@@ -31,55 +31,92 @@ export default function Component() {
     },
     {
       title: "CCTV Analytic",
-      description: "a web for counting vehicle. this project is private because NDA (Non-Disclosure Agreement). I can show the code in limited places",
+      description: "a web for counting vehicle and analytics. this project is private because NDA (Non-Disclosure Agreement). I can show the code in limited places",
       tech: ["Golang", "React", "PostgreSQL"],
-      demo: "https://task-manager-demo.example.com"
+      demo: "https://mam.jogjaprov.go.id/"
     },
     {
-      title: "Weather App",
-      description: "Real-time weather forecasting application with location-based services",
-      tech: ["React Native", "OpenWeatherMap API", "Geolocation"],
-      github: "https://github.com/yourusername/weather-app",
-      demo: "https://weather-app-demo.example.com"
+      title: "Kamus Gen-Z API",
+      description: "Open-Source project from IMPHEN",
+      tech: ["Javascript", "SQLite", "Prisma"],
+      github: "https://github.com/IMPHNEN/kamus-gen-z-api.git",
+      demo: "aaaaaaaaa"
     },
     {
-      title: "Blog Platform",
-      description: "A full-stack blogging platform with user authentication and markdown support",
-      tech: ["Vue.js", "Django", "PostgreSQL"],
-      github: "https://github.com/yourusername/blog-platform",
-      demo: "https://blog-platform-demo.example.com"
-    }
+      title: "Admin-Reviewer Module",
+      description: "project admin and reviewer for SIPMAS (Research and Community Service Information System)",
+      tech: ["laravel", "MySQL"],
+      github: "https://github.com/HengkerKucing/AdminReviewer-Module.git",
+      dokumentasi: "https://docs.google.com/document/d/1T1gPkAoQ5pxwV4HXsPok4jD3Zn8eqVIep2cKJLAbmkY/edit?usp=sharing"
+    },
+    {
+      title: "Personal Website V1",
+      description: "Personal Website for portofolio",
+      tech: ["HTML", "TailwindCSS", "JavaScript"],
+      github: "https://github.com/HengkerKucing/web_aldi_tailwindcss.git",
+      demo: "aaaaaaaaa"
+    },
+    {
+      title: "Bread E-Commerce",
+      description: "Mobile E-Commerce for selling bread, this project when I test for BNSP Junior Mobile Programmer",
+      tech: ["Dart", "Flutter", "PHP", "MySQL"],
+      github: "https://github.com/HengkerKucing/Mobile_Roti_BNSP.git",
+    },
+    {
+      title: "Random Pokemon Generator",
+      description: "Website for generate a random pokemon with beatiful card",
+      tech: ["HTML", "CSS", "JavaScript"],
+      github: "https://github.com/HengkerKucing/Pokemon-generator.git",
+      demo: "aaaaaaaaa"
+    },
+    {
+      title: "Cloud Architecture for E-Commerce",
+      description: "Cloud Architecture for mini E-Commerce",
+      tech: ["GCP", "Load Balancing", "VPC", "Cloud NAT", "Cloud Firewall"],
+      dokumentasi: "https://docs.google.com/document/d/1IF4Q9_a69_dID79hkL42yA-kwU6KLWWqg-_B50Qsonw/edit?usp=sharing"
+    },
+    {
+      title: "Deploy App using App Engine",
+      description: "Deploy Money Tracker App using App Engine",
+      tech: ["GCP", "App Engine", "Cloud SQL", "Cloud Storage Bucket"],
+      dokumentasi: "https://docs.google.com/document/d/1HuGqJYvXdrfaiDM2oGIZd8Y2sToz4dpYrLI5osO7oUo/edit?usp=sharing"
+    },
+    {
+      title: "Deploy App using Kubernetes Engine",
+      description: "Deploy Notes App using Kubernetes Engine on GCP",
+      tech: ["GCP", "GKE", "Artifact Registry"],
+      dokumentasi: "https://docs.google.com/document/d/1VAGhq8HOpWxggv1TZiJ1KCQSzwVkNM8MOWd8SJbYT50/edit?usp=sharing"
+    },
+    {
+      title: "Zombie Apocalypse",
+      description: "Game Zombie",
+      tech: ["Unity"],
+      dokumentasi: "https://docs.google.com/document/d/1VC1sl7yZuRWtQYk9f8W7Mt9AFH6L-XoaevMyDavDH_E/edit?usp=sharing"
+    },
   ]
 
   const experiences = [
     {
-      year: "2023 - Present",
-      role: "Senior Software Engineer",
-      company: "Tech Corp",
-      description: "Leading development of microservices architecture and cloud infrastructure.",
-      companyUrl: "https://techcorp.example.com"
+      year: "2024",
+      role: "Backend Developer Intern (MSIB)",
+      company: "Dinas Kominfo DIY",
+      description: "Working on project CCTV Analytic",
+      companyUrl: "https://diskominfo.jogjaprov.go.id/"
     },
     {
-      year: "2021 - 2023",
-      role: "Full Stack Developer",
-      company: "Digital Solutions Inc",
-      description: "Developed and maintained multiple client projects using modern web technologies.",
-      companyUrl: "https://digitalsolutions.example.com"
+      year: "2023",
+      role: "Media Creative",
+      company: "Google Developer Students Club",
+      description: "Make poster and feed",
+      companyUrl: "https://www.instagram.com/gdsc.polines/"
     },
     {
-      year: "2019 - 2021",
-      role: "Junior Web Developer",
-      company: "StartUp Innovations",
-      description: "Contributed to the development of innovative web applications and gained experience in agile methodologies.",
-      companyUrl: "https://startupinnovations.example.com"
+      year: "2022",
+      role: "Graduate",
+      company: "From High School",
+      description: "",
+      companyUrl: ""
     },
-    {
-      year: "2018 - 2019",
-      role: "Intern",
-      company: "CodeCraft Academy",
-      description: "Assisted in the development of educational coding platforms and participated in code reviews.",
-      companyUrl: "https://codecraft.example.com"
-    }
   ]
 
   return (
@@ -116,7 +153,7 @@ export default function Component() {
             <h2 className="text-lg sm:text-xl text-muted-foreground mb-3">Cloud Engineer & Backend Developer</h2>
             <p className="text-base sm:text-lg text-muted-foreground mb-4">
               Passionate developer crafting elegant solutions with modern technologies. Specialized in building scalable web
-              applications with React, Node.js, and cloud technologies.
+              applications with React, Go, and cloud technologies.
             </p>
             <div className="flex gap-3">
               <Button onClick={() => scrollToSection('projects')}>View Projects</Button>
@@ -129,7 +166,7 @@ export default function Component() {
         <section className="py-8 border-t border-white/10">
           <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Technical Skills</h2>
           <div className="flex flex-wrap gap-2">
-            {["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "Node.js", "Express", "PostgreSQL", "MongoDB", "Redis", "Git", "Docker", "AWS", "Linux", "CI/CD"].map((skill) => (
+            {["GCP", "AWS", "Golang", "Tailwind CSS", "PHP", "React", "JavaScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Git", "Linux"].map((skill) => (
               <div
                 key={skill}
                 className="bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
@@ -209,7 +246,7 @@ export default function Component() {
 
         {/* Experience Section */}
         <section id="experience" className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Professional Experience</h2>
+          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Experience</h2>
           <div className="grid gap-6">
             {experiences.slice(0, showAllExperience ? experiences.length : 2).map((exp, index) => (
               <div key={index} className="grid sm:grid-cols-[140px,1fr] gap-2">
@@ -254,19 +291,19 @@ export default function Component() {
               I&apos;m always interested in hearing about new projects and opportunities. Feel free to reach out!
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link href="mailto:your.email@example.com">
+              <Link href="mailto:luqmanaldp@gmail.com">
                 <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
                   <Mail className="w-4 h-4 mr-2" />
                   Email Me
                 </Button>
               </Link>
-              <Link href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">
+              <Link href="https://linkedin.com/in/luqman-aldi/" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
                   <Linkedin className="w-4 h-4 mr-2" />
                   LinkedIn
                 </Button>
               </Link>
-              <Link href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/HengkerKucing" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
                   <Github className="w-4 h-4 mr-2" />
                   GitHub
