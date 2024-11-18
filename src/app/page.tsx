@@ -14,6 +14,8 @@ const underlinedHeading = "relative inline-block after:content-[''] after:absolu
 export default function Component() {
   const [showAllProjects, setShowAllProjects] = useState(false)
   const [showAllExperience, setShowAllExperience] = useState(false)
+  const [showAllCertifications, setShowAllCertifications] = useState(false);
+
 
   // Function to handle smooth scrolling with TypeScript type
   const scrollToSection = (elementId: string): void => {
@@ -21,6 +23,33 @@ export default function Component() {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const certifications = [
+    {
+      title: "Google Cloud Engineer",
+      provider: "Dicoding Indonesia",
+      icon: "/img/dicoding.png",
+      url: "https://www.dicoding.com/certificates/XXXXXX"
+    },
+    {
+      title: "Google Cloud Professional Data Engineer",
+      provider: "Google Cloud",
+      icon: "/icons/google-cloud.png",
+      url: "https://www.google.com/certificates/XXXXXX"
+    },
+    {
+      title: "Google Cloud Professional Data Engineer",
+      provider: "Google Cloud",
+      icon: "/icons/google-cloud.png",
+      url: "https://www.google.com/certificates/XXXXXX"
+    },
+    {
+      title: "Google Cloud Professional Data Engineer",
+      provider: "Google Cloud",
+      icon: "/icons/google-cloud.png",
+      url: "https://www.google.com/certificates/XXXXXX"
+    },
+  ];  
+  
   const projects = [
     {
       title: "BeliJasa.com",
@@ -175,6 +204,55 @@ export default function Component() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Certifications Section */}
+        <section className="py-8 border-t border-white/10">
+          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Certifications</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {certifications.slice(0, showAllCertifications ? certifications.length : 3).map((cert, index) => (
+              <a 
+                href={cert.url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                key={index} 
+                className="no-underline"
+              >
+                <Card className="bg-white/5 border-white/10 flex flex-row items-center p-4 hover:bg-white/10 transition-colors cursor-pointer">
+                  <Image 
+                    src={cert.icon} 
+                    alt={cert.provider} 
+                    width={40} 
+                    height={40} 
+                    className="mr-4"
+                  />
+                  <div>
+                    <h3 className="text-lg font-bold text-white">{cert.title}</h3>
+                    <p className="text-sm text-muted-foreground">{cert.provider}</p>
+                  </div>
+                </Card>
+              </a>
+            ))}
+          </div>
+          {certifications.length > 3 && (
+            <div className="mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowAllCertifications(!showAllCertifications)}
+                className="w-full bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
+              >
+                {showAllCertifications ? (
+                  <>
+                    Show Less <ChevronUp className="ml-2 h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    Show More Certifications <ChevronDown className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </section>
 
         {/* Projects Section */}
