@@ -24,10 +24,10 @@ export default function Component() {
   const projects = [
     {
       title: "BeliJasa.com",
-      description: "marketplace ",
-      tech: ["Next.js", "Node.js", "PostgreSQL"],
-      github: "https://github.com/yourusername/ecommerce",
-      demo: "https://ecommerce-demo.example.com"
+      description: "local marketplace for buying and selling services",
+      tech: ["MangoDB", "Express", "React", "Node.js"],
+      github: "https://github.com/HengkerKucing/belijasa.git",
+      dokumentasi: "https://docs.google.com/document/d/1b0fteH99bMJiRPfwAoUHEdANIE-LwFOxK7EK9KI1Dts/edit?usp=sharing"
     },
     {
       title: "Task Management System",
@@ -159,19 +159,28 @@ export default function Component() {
                       </Badge>
                     ))}
                   </div>
-                  <div className="flex gap-2">
-                    <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm">
-                        <Github className="w-4 h-4 mr-1" />
-                        Code
-                      </Button>
-                    </Link>
-                    <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm">
-                        Live Demo
-                      </Button>
-                    </Link>
-                  </div>
+                    <div className="flex gap-2">
+                      <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" size="sm">
+                          <Github className="w-4 h-4 mr-1" />
+                          Code
+                        </Button>
+                      </Link>
+                      {project.demo && (
+                        <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm">
+                            Live Demo
+                          </Button>
+                        </Link>
+                      )}
+                      {project.dokumentasi && (
+                        <Link href={project.dokumentasi} target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm">
+                            Dokumentasi
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                 </CardContent>
               </Card>
             ))}
