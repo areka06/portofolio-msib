@@ -28,25 +28,49 @@ export default function Component() {
       title: "Google Cloud Engineer",
       provider: "Dicoding Indonesia",
       icon: "/img/dicoding.png",
-      url: "https://www.dicoding.com/certificates/XXXXXX"
+      url: "https://www.dicoding.com/certificates/MRZM82ENNZYQ"
     },
     {
-      title: "Google Cloud Professional Data Engineer",
-      provider: "Google Cloud",
-      icon: "/icons/google-cloud.png",
-      url: "https://www.google.com/certificates/XXXXXX"
+      title: "Google Cloud Architect",
+      provider: "Dicoding Indonesia",
+      icon: "/img/dicoding.png",
+      url: "https://www.dicoding.com/certificates/98XW23LE9PM3"
     },
     {
-      title: "Google Cloud Professional Data Engineer",
-      provider: "Google Cloud",
-      icon: "/icons/google-cloud.png",
-      url: "https://www.google.com/certificates/XXXXXX"
+      title: "Implement Load Balancing",
+      provider: "Cloud Skillboost",
+      icon: "/img/cloud.svg",
+      url: "https://www.cloudskillsboost.google/public_profiles/b08a67fd-635e-45d8-a876-5053c5d14ec8/badges/9240804?utm_medium=social&utm_source=linkedin&utm_campaign=ql-social-share"
     },
     {
-      title: "Google Cloud Professional Data Engineer",
-      provider: "Google Cloud",
-      icon: "/icons/google-cloud.png",
-      url: "https://www.google.com/certificates/XXXXXX"
+      title: "Build Real World AI App",
+      provider: "Cloud Skillboost",
+      icon: "/img/cloud.svg",
+      url: "https://www.cloudskillsboost.google/public_profiles/dac03a59-e840-456c-8c3a-ab24175af516/badges/9961848?utm_medium=social&utm_source=linkedin&utm_campaign=ql-social-share"
+    },
+    {
+      title: "Go-Lang Basic",
+      provider: "Codepolitan",
+      icon: "/img/codepolitan.png",
+      url: "https://www.codepolitan.com/c/Z9TABD2/"
+    },
+    {
+      title: "Database Design",
+      provider: "Oracle",
+      icon: "/img/oracle.png",
+      url: "https://drive.google.com/file/d/1joASiWPjvrfE2fq5affXvwphdpYekj5Y/view"
+    },
+    {
+      title: "Intermediate Multimedia Designer",
+      provider: "BNSP",
+      icon: "/img/BNSP.png",
+      url: "https://drive.google.com/file/d/10gSBByxLpIJvA0y1vcN74GCFyKzLdeKc/view"
+    },
+    {
+      title: "Click Me For More Certifications",
+      provider: "Linkedin",
+      icon: "/img/LinkedIn.png",
+      url: "https://www.linkedin.com/in/luqman-aldi/details/certifications/"
     },
   ];  
   
@@ -69,7 +93,7 @@ export default function Component() {
       description: "Open-Source project from IMPHEN",
       tech: ["Javascript", "SQLite", "Prisma"],
       github: "https://github.com/IMPHNEN/kamus-gen-z-api.git",
-      demo: "aaaaaaaaa"
+      demo: "https://kamusgenz.vercel.app/"
     },
     {
       title: "Admin-Reviewer Module",
@@ -83,7 +107,7 @@ export default function Component() {
       description: "Personal Website for portofolio",
       tech: ["HTML", "TailwindCSS", "JavaScript"],
       github: "https://github.com/HengkerKucing/web_aldi_tailwindcss.git",
-      demo: "aaaaaaaaa"
+      demo: "https://porto-aldi-v1.vercel.app/"
     },
     {
       title: "Bread E-Commerce",
@@ -96,7 +120,7 @@ export default function Component() {
       description: "Website for generate a random pokemon with beatiful card",
       tech: ["HTML", "CSS", "JavaScript"],
       github: "https://github.com/HengkerKucing/Pokemon-generator.git",
-      demo: "aaaaaaaaa"
+      demo: "https://pokemon-generator-vert.vercel.app/"
     },
     {
       title: "Cloud Architecture for E-Commerce",
@@ -162,14 +186,14 @@ export default function Component() {
               className=""
             />
           </Link>
-          <nav className="flex gap-6">
+          {/* <nav className="flex gap-6">
             <Link className="hover:text-primary transition-colors" href="#projects">
               Projects
             </Link>
             <Link className="hover:text-primary transition-colors" href="#experience">
               Experience
             </Link>
-          </nav>
+          </nav> */}
         </div>
       </header>
 
@@ -178,7 +202,7 @@ export default function Component() {
         {/* Hero Section */}
         <section className="pt-24 pb-8">
           <div className="max-w-2xl">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Luqman Aldi P</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Luqman Aldi Prawiratama</h1>
             <h2 className="text-lg sm:text-xl text-muted-foreground mb-3">Cloud Engineer & Backend Developer</h2>
             <p className="text-base sm:text-lg text-muted-foreground mb-4">
               Passionate developer crafting elegant solutions with modern technologies. Specialized in building scalable web
