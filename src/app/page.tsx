@@ -418,11 +418,11 @@ export default function Component() {
         {/* Footer */}
         <footer className="py-6 border-t border-white/10 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} John Developer. All rights reserved.
+            © {new Date().getFullYear()} Luqman Aldi Prawiratama with ❤️
           </p>
           <nav className="mt-3">
             <ul className="flex justify-center space-x-4">
-              <li>
+              {/* <li>
                 <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-white transition-colors">
                   Privacy Policy
                 </Link>
@@ -431,7 +431,7 @@ export default function Component() {
                 <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-white transition-colors">
                   Terms of Service
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </nav>
         </footer>
