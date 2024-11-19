@@ -1,441 +1,618 @@
 'use client'
 
-import { useState } from 'react'
-import Link from "next/link"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
-import { Github, Mail, Linkedin, ChevronDown, ChevronUp } from 'lucide-react'
-
+import Link from "next/link"
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Progress } from "@/components/ui/progress"
+import { Send, Code, Github, Linkedin, Mail, ExternalLink, ChevronDown, ChevronUp, Menu, X, MousePointer2, Sun, Moon, Calendar, ArrowUp, Zap, Globe, Shield } from 'lucide-react'
 
-const underlinedHeading = "relative inline-block after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-12 after:bg-red-500 after:rounded-full pb-2"
+const MotionLink = motion(Link)
 
-export default function Component() {
+const projects = [
+  {
+    id: 1,
+    title: "E-commerce Platform",
+    description: "A modern e-commerce solution with real-time inventory and dynamic pricing",
+    image: "/placeholder.svg",
+    technologies: ['Next.js', 'React', 'Prisma', 'Stripe'],
+    codeLink: "#",
+    demoLink: "#",
+    longDescription: "This e-commerce platform leverages Next.js for server-side rendering, React for a dynamic user interface, Prisma for efficient database management, and Stripe for secure payment processing. It features real-time inventory updates, dynamic pricing based on demand and supply, and a responsive design for optimal user experience across devices."
+  },
+  {
+    id: 2,
+    title: "AI Content Generator",
+    description: "Content generation platform powered by machine learning",
+    image: "/placeholder.svg",
+    technologies: ['Python', 'TensorFlow', 'React', 'FastAPI'],
+    codeLink: "#",
+    demoLink: "#",
+    longDescription: "Our AI Content Generator utilizes advanced machine learning algorithms implemented in Python and TensorFlow to create high-quality, context-aware content. The React frontend provides an intuitive interface for users to input parameters and receive generated content, while FastAPI ensures quick and efficient backend operations."
+  },
+  {
+    id: 3,
+    title: "Real-time Analytics",
+    description: "Dashboard for monitoring and analyzing user behavior",
+    image: "/placeholder.svg",
+    technologies: ['Next.js', 'D3.js', 'WebSocket', 'PostgreSQL'],
+    codeLink: "#",
+    demoLink: "#",
+    longDescription: "This real-time analytics dashboard offers instant insights into user behavior. Built with Next.js for seamless server-side rendering and client-side navigation, it uses D3.js for creating interactive and responsive data visualizations. WebSocket connections ensure live updates, while PostgreSQL provides robust data storage and querying capabilities."
+  },
+  {
+    id: 4,
+    title: "Task Management App",
+    description: "Collaborative task manager with real-time updates",
+    image: "/placeholder.svg",
+    technologies: ['React', 'Firebase', 'Material-UI'],
+    codeLink: "#",
+    demoLink: "#",
+    longDescription: "Our Task Management App streamlines team collaboration with real-time updates. React provides a smooth and responsive user interface, while Firebase handles real-time data synchronization and user authentication. Material-UI ensures a consistent and attractive design across the application, enhancing usability and user experience."
+  }
+]
+
+const skills = [
+  { name: "Frontend Development", icon: <Code size={20} />, progress: 95 },
+  { name: "Backend Architecture", icon: <Code size={20} />, progress: 85 },
+  { name: "Cloud Infrastructure", icon: <Code size={20} />, progress: 90 },
+  { name: "DevOps & CI/CD", icon: <Code size={20} />, progress: 88 },
+  { name: "UI/UX Design", icon: <Code size={20} />, progress: 80 },
+  { name: "Mobile App Development", icon: <Code size={20} />, progress: 75 },
+  { name: "Database Management", icon: <Code size={20} />, progress: 92 },
+  { name: "API Design", icon: <Code size={20} />, progress: 87 }
+]
+
+const certifications = [
+  { title: "AWS Certified Solutions Architect", issuer: "Amazon Web Services", year: 2023, link: "https://www.credly.com/org/amazon-web-services/badge/aws-certified-solutions-architect-associate" },
+  { title: "Google Cloud Professional Developer", issuer: "Google Cloud", year: 2022, link: "https://www.credential.net/credential-template?key=google_cloud_professional_developer" },
+  { title: "Certified Kubernetes Administrator", issuer: "Cloud Native Computing Foundation", year: 2022, link: "https://www.cncf.io/certification/cka/" },
+  { title: "React Native Specialist", issuer: "React Native Academy", year: 2021, link: "https://reactnative.dev/docs/certificate" },
+  { title: "Advanced Machine Learning", issuer: "Stanford Online", year: 2021, link: "https://online.stanford.edu/programs/advanced-machine-learning-program" },
+  { title: "Full Stack Web Development", issuer: "FreeCodeCamp", year: 2020, link: "https://www.freecodecamp.org/certification/fcc_username/full-stack" }
+]
+
+const galleryItems = [
+  { id: 1, src: "/placeholder.svg", alt: "Project Screenshot 1" },
+  { id: 2, src: "/placeholder.svg", alt: "Project Screenshot 2" },
+  { id: 3, src: "/placeholder.svg", alt: "Project Screenshot 3" },
+  { id: 4, src: "/placeholder.svg", alt: "Project Screenshot 4" },
+  { id: 5, src: "/placeholder.svg", alt: "Project Screenshot 5" },
+  { id: 6, src: "/placeholder.svg", alt: "Project Screenshot 6" },
+]
+
+const newFeatures = [
+  {
+    title: "AI-Powered Code Generation",
+    description: "Utilize cutting-edge AI to assist in code generation and problem-solving",
+    icon: <Zap className="w-6 h-6" />
+  },
+  {
+    title: "Global Remote Collaboration",
+    description: "Seamlessly work with teams across different time zones and cultures",
+    icon: <Globe className="w-6 h-6" />
+  },
+  {
+    title: "Advanced Security Implementation",
+    description: "Implement state-of-the-art security measures in all projects",
+    icon: <Shield className="w-6 h-6" />
+  }
+]
+
+export default function EnhancedModernPortfolio() {
+  const [darkMode, setDarkMode] = useState(true)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('home')
+  const [showAllCertificates, setShowAllCertificates] = useState(false)
   const [showAllProjects, setShowAllProjects] = useState(false)
-  const [showAllExperience, setShowAllExperience] = useState(false)
-  const [showAllCertifications, setShowAllCertifications] = useState(false);
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [message, setMessage] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null)
 
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const [galleryWidth, setGalleryWidth] = useState(0)
 
-  // Function to handle smooth scrolling with TypeScript type
-  const scrollToSection = (elementId: string): void => {
-    const element = document.getElementById(elementId);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const { scrollYProgress } = useScroll()
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
 
-  const certifications = [
-    {
-      title: "Google Cloud Engineer",
-      provider: "Dicoding Indonesia",
-      icon: "/img/dicoding.png",
-      url: "https://www.dicoding.com/certificates/MRZM82ENNZYQ"
-    },
-    {
-      title: "Google Cloud Architect",
-      provider: "Dicoding Indonesia",
-      icon: "/img/dicoding.png",
-      url: "https://www.dicoding.com/certificates/98XW23LE9PM3"
-    },
-    {
-      title: "Implement Load Balancing",
-      provider: "Cloud Skillboost",
-      icon: "/img/cloud.svg",
-      url: "https://www.cloudskillsboost.google/public_profiles/b08a67fd-635e-45d8-a876-5053c5d14ec8/badges/9240804?utm_medium=social&utm_source=linkedin&utm_campaign=ql-social-share"
-    },
-    {
-      title: "Build Real World AI App",
-      provider: "Cloud Skillboost",
-      icon: "/img/cloud.svg",
-      url: "https://www.cloudskillsboost.google/public_profiles/dac03a59-e840-456c-8c3a-ab24175af516/badges/9961848?utm_medium=social&utm_source=linkedin&utm_campaign=ql-social-share"
-    },
-    {
-      title: "Go-Lang Basic",
-      provider: "Codepolitan",
-      icon: "/img/codepolitan.png",
-      url: "https://www.codepolitan.com/c/Z9TABD2/"
-    },
-    {
-      title: "Database Design",
-      provider: "Oracle",
-      icon: "/img/oracle.png",
-      url: "https://drive.google.com/file/d/1joASiWPjvrfE2fq5affXvwphdpYekj5Y/view"
-    },
-    {
-      title: "Intermediate Multimedia Designer",
-      provider: "BNSP",
-      icon: "/img/BNSP.png",
-      url: "https://drive.google.com/file/d/10gSBByxLpIJvA0y1vcN74GCFyKzLdeKc/view"
-    },
-    {
-      title: "Click Me For More Certifications",
-      provider: "Linkedin",
-      icon: "/img/LinkedIn.png",
-      url: "https://www.linkedin.com/in/luqman-aldi/details/certifications/"
-    },
-  ];  
-  
-  const projects = [
-    {
-      title: "BeliJasa.com",
-      description: "local marketplace for buying and selling services",
-      tech: ["MangoDB", "Express", "React", "Node.js"],
-      github: "https://github.com/HengkerKucing/belijasa.git",
-      dokumentasi: "https://docs.google.com/document/d/1b0fteH99bMJiRPfwAoUHEdANIE-LwFOxK7EK9KI1Dts/edit?usp=sharing"
-    },
-    {
-      title: "CCTV Analytic",
-      description: "a web for counting vehicle and analytics. this project is private because NDA (Non-Disclosure Agreement). I can show the code in limited places",
-      tech: ["Golang", "React", "PostgreSQL"],
-      demo: "https://mam.jogjaprov.go.id/"
-    },
-    {
-      title: "Kamus Gen-Z API",
-      description: "Open-Source project from IMPHEN",
-      tech: ["Javascript", "SQLite", "Prisma"],
-      github: "https://github.com/IMPHNEN/kamus-gen-z-api.git",
-      demo: "https://kamusgenz.vercel.app/"
-    },
-    {
-      title: "Admin-Reviewer Module",
-      description: "project admin and reviewer for SIPMAS (Research and Community Service Information System)",
-      tech: ["Laravel", "MySQL"],
-      github: "https://github.com/HengkerKucing/AdminReviewer-Module.git",
-      dokumentasi: "https://docs.google.com/document/d/1T1gPkAoQ5pxwV4HXsPok4jD3Zn8eqVIep2cKJLAbmkY/edit?usp=sharing"
-    },
-    {
-      title: "Personal Website V1",
-      description: "Personal Website for portofolio",
-      tech: ["HTML", "TailwindCSS", "JavaScript"],
-      github: "https://github.com/HengkerKucing/web_aldi_tailwindcss.git",
-      demo: "https://porto-aldi-v1.vercel.app/"
-    },
-    {
-      title: "Bread E-Commerce",
-      description: "Mobile E-Commerce for selling bread, this project when I test for BNSP Junior Mobile Programmer",
-      tech: ["Dart", "Flutter", "PHP", "MySQL"],
-      github: "https://github.com/HengkerKucing/Mobile_Roti_BNSP.git",
-    },
-    {
-      title: "Random Pokemon Generator",
-      description: "Website for generate a random pokemon with beatiful card",
-      tech: ["HTML", "CSS", "JavaScript"],
-      github: "https://github.com/HengkerKucing/Pokemon-generator.git",
-      demo: "https://pokemon-generator-vert.vercel.app/"
-    },
-    {
-      title: "Cloud Architecture for E-Commerce",
-      description: "Cloud Architecture for mini E-Commerce",
-      tech: ["GCP", "Load Balancing", "VPC", "Cloud NAT", "Cloud Firewall"],
-      dokumentasi: "https://docs.google.com/document/d/1IF4Q9_a69_dID79hkL42yA-kwU6KLWWqg-_B50Qsonw/edit?usp=sharing"
-    },
-    {
-      title: "Deploy App using App Engine",
-      description: "Deploy Money Tracker App using App Engine",
-      tech: ["GCP", "App Engine", "Cloud SQL", "Cloud Storage Bucket"],
-      dokumentasi: "https://docs.google.com/document/d/1HuGqJYvXdrfaiDM2oGIZd8Y2sToz4dpYrLI5osO7oUo/edit?usp=sharing"
-    },
-    {
-      title: "Deploy App using Kubernetes Engine",
-      description: "Deploy Notes App using Kubernetes Engine on GCP",
-      tech: ["GCP", "GKE", "Artifact Registry"],
-      dokumentasi: "https://docs.google.com/document/d/1VAGhq8HOpWxggv1TZiJ1KCQSzwVkNM8MOWd8SJbYT50/edit?usp=sharing"
-    },
-    {
-      title: "Zombie Apocalypse",
-      description: "Game Zombie",
-      tech: ["Unity"],
-      dokumentasi: "https://docs.google.com/document/d/1VC1sl7yZuRWtQYk9f8W7Mt9AFH6L-XoaevMyDavDH_E/edit?usp=sharing"
-    },
-  ]
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['home', 'projects', 'skills', 'certifications', 'gallery', 'contact']
+      const scrollPosition = window.scrollY + 100
 
-  const experiences = [
-    {
-      year: "2024",
-      role: "Backend Developer Intern (MSIB)",
-      company: "Dinas Kominfo DIY",
-      description: "Working on project CCTV Analytic",
-      companyUrl: "https://diskominfo.jogjaprov.go.id/"
-    },
-    {
-      year: "2023",
-      role: "Media Creative",
-      company: "Google Developer Students Club",
-      description: "Make poster and feed",
-      companyUrl: "https://www.instagram.com/gdsc.polines/"
-    },
-    {
-      year: "2022",
-      role: "Graduate",
-      company: "From High School",
-      description: "",
-      companyUrl: ""
-    },
-  ]
+      for (const section of sections) {
+        const element = document.getElementById(section)
+        if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
+          setActiveSection(section)
+          break
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    if (galleryRef.current) {
+      setGalleryWidth(galleryRef.current.scrollWidth - galleryRef.current.offsetWidth)
+    }
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Form submitted:", { name, email, message })
+    alert("Thank you for your message! I'll get back to you soon.")
+    setName("")
+    setEmail("")
+    setMessage("")
+  }
+
+  const navItems = ['Home', 'Projects', 'Skills', 'Certifications', 'Gallery', 'Contact']
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="fixed top-0 w-full border-b border-white/10 bg-black/50 backdrop-blur-md z-50">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link className="text-xl font-bold flex items-center gap-2" href="/">
-            <Image
-              src="/img/logo.png"
-              alt="Logo"
-              width={40}
-              height={40}
-              className=""
-            />
-          </Link>
-          {/* <nav className="flex gap-6">
-            <Link className="hover:text-primary transition-colors" href="#projects">
-              Projects
-            </Link>
-            <Link className="hover:text-primary transition-colors" href="#experience">
-              Experience
-            </Link>
-          </nav> */}
-        </div>
-      </header>
-
-      {/* Main Content Container */}
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Hero Section */}
-        <section className="pt-24 pb-8">
-          <div className="max-w-2xl">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Luqman Aldi Prawiratama</h1>
-            <h2 className="text-lg sm:text-xl text-muted-foreground mb-3">Cloud Engineer & Backend Developer</h2>
-            <p className="text-base sm:text-lg text-muted-foreground mb-4">
-              Passionate developer crafting elegant solutions with modern technologies. Specialized in building scalable web
-              applications with React, Go, and cloud technologies.
-            </p>
-            <div className="flex gap-3">
-              <Button onClick={() => scrollToSection('projects')}>View Projects</Button>
-              <Button variant="secondary" onClick={() => scrollToSection('contact')}>Contact Me</Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Skills Section */}
-        <section className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Technical Skills</h2>
-          <div className="flex flex-wrap gap-2">
-            {["GCP", "AWS", "Golang", "Tailwind CSS", "PHP", "React", "JavaScript", "Node.js", "Express", "PostgreSQL", "MongoDB", "Git", "Linux"].map((skill) => (
-              <div
-                key={skill}
-                className="bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
+    <div className={`min-h-screen bg-black text-white`}>
+      {/* Loading Animation */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.h1
+                className="text-6xl font-bold mb-4"
+                layout
               >
-                {skill}
-              </div>
+                Full-Stack Developer
+              </motion.h1>
+              <motion.p
+                className="text-xl text-gray-400"
+                layout
+              >
+                Building high-quality web applications with modern technologies and best practices.
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-sm bg-black/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="text-xl font-bold">
+              Portfolio
+            </Link>
+            <div className="hidden md:flex space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className={`text-sm hover:text-white transition-colors ${
+                    activeSection === item.toLowerCase() ? 'text-white' : 'text-gray-300'
+                  }`}
+                >
+                  {item}
+                </Link>
+              ))}
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="fixed inset-0 z-40 bg-black bg-opacity-90 flex flex-col items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className={`text-2xl py-2 ${
+                  activeSection === item.toLowerCase() ? 'text-white' : 'text-gray-400'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Hero Section */}
+      <motion.section
+        id="home"
+        className="pt-32 pb-16 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.h1 
+            className="text-5xl sm:text-6xl font-bold tracking-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.5 }}
+          >
+            Full-Stack Developer
+          </motion.h1>
+          <motion.p 
+            className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.7 }}
+          >
+            Building high-quality web applications with modern technologies and best practices.
+          </motion.p>
+          <motion.div 
+            className="mt-10 flex justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.9 }}
+          >
+            <Button className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg">
+              View Projects
+            </Button>
+            <Button variant="outline" className="bg-black/50 border-white/20 hover:bg-white/10 px-8 py-3 text-lg">
+              Contact Me
+            </Button>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* New Features Section */}
+      <section className="py-20 px-4 bg-white/5">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">New Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {newFeatures.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                className="p-6 rounded-lg border border-white/10 bg-black"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="flex items-center mb-4">
+                  {feature.icon}
+                  <h3 className="text-xl font-semibold ml-2">{feature.title}</h3>
+                </div>
+                <p className="text-gray-400">{feature.description}</p>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Certifications Section */}
-        <section className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Certifications</h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {certifications.slice(0, showAllCertifications ? certifications.length : 3).map((cert, index) => (
-              <a 
-                href={cert.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                key={index} 
-                className="no-underline"
+      {/* Projects Section */}
+      <section id="projects" className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.slice(0, showAllProjects ? projects.length : 3).map((project, index) => (
+              <motion.div
+                key={project.id}
+                className="group rounded-lg border border-white/10 bg-white/5 overflow-hidden hover:bg-white/10 transition-colors cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                onClick={() => setSelectedProject(project)}
               >
-                <Card className="bg-white/5 border-white/10 flex flex-row items-center p-4 hover:bg-white/10 transition-colors cursor-pointer">
-                  <Image 
-                    src={cert.icon} 
-                    alt={cert.provider} 
-                    width={40} 
-                    height={40} 
-                    className="mr-4"
+                <div className="aspect-video relative">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
                   />
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{cert.title}</h3>
-                    <p className="text-sm text-muted-foreground">{cert.provider}</p>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2">{project.title}</h3>
+                  <p className="text-gray-400 text-sm mb-3">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300"
+                      >
+                        {tech}
+                      </span>
+                    ))}
                   </div>
-                </Card>
-              </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          {projects.length > 3 && (
+            <div className="mt-12 text-center">
+              <Button
+                onClick={() => setShowAllProjects(!showAllProjects)}
+                className="bg-white/10 hover:bg-white/20 text-white text-lg px-8 py-3"
+              >
+                {showAllProjects ? 'Show Less' : 'Show More'}
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Project Detail Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProject(null)}
+            />
+            <motion.div
+              className="bg-black border border-white/10 rounded-lg p-6 max-w-2xl w-full relative z-10"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            >
+              <h2 className="text-2xl font-bold mb-4">{selectedProject.title}</h2>
+              <Image
+                src={selectedProject.image}
+                alt={selectedProject.title}
+                width={600}
+                height={400}
+                className="rounded-lg mb-4 object-cover w-full"
+              />
+              <p className="text-gray-300 mb-4">{selectedProject.longDescription}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {selectedProject.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-between">
+                <Link
+                  href={selectedProject.demoLink}
+                  className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
+                >
+                  <ExternalLink className="w-4 h-4" /> View Demo
+                </Link>
+                <Link
+                  href={selectedProject.codeLink}
+                  className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
+                >
+                  <Code className="w-4 h-4" /> View Code
+                </Link>
+              </div>
+              <Button
+                className="absolute top-2 right-2 text-gray-400 hover:text-white"
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedProject(null)}
+              >
+                <X className="w-6 h-6" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Skills Section */}
+      <section id="skills" className="py-20 px-4 bg-white/5">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Skills & Expertise</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {skills.map((skill, index) => (
+              <motion.div
+                key={skill.name}
+                className="p-6 rounded-lg border border-white/10 bg-black"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold flex items-center gap-2 text-lg">
+                    {skill.icon} {skill.name}
+                  </h3>
+                  <span className="text-gray-400">{skill.progress}%</span>
+                </div>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${skill.progress}%` }}
+                  transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                  className="h-2 bg-white/50 rounded-full"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Certifications Section */}
+      <section id="certifications" className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Certifications</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {certifications.slice(0, showAllCertificates ? certifications.length : 3).map((cert, index) => (
+              <motion.div
+                key={cert.title}
+                className="p-6 rounded-lg border border-white/10 bg-white/5"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <h3 className="font-bold text-xl mb-2">{cert.title}</h3>
+                <p className="text-base text-gray-400">{cert.issuer}</p>
+                <p className="text-sm text-gray-500 mb-4">{cert.year}</p>
+                <Link
+                  href={cert.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
+                >
+                  <ExternalLink className="w-4 h-4" /> View Certificate
+                </Link>
+              </motion.div>
             ))}
           </div>
           {certifications.length > 3 && (
-            <div className="mt-4">
+            <div className="mt-12 text-center">
               <Button
-                variant="outline"
-                onClick={() => setShowAllCertifications(!showAllCertifications)}
-                className="w-full bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
+                onClick={() => setShowAllCertificates(!showAllCertificates)}
+                className="bg-white/10 hover:bg-white/20 text-white text-lg px-8 py-3"
               >
-                {showAllCertifications ? (
-                  <>
-                    Show Less <ChevronUp className="ml-2 h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    Show More Certifications <ChevronDown className="ml-2 h-4 w-4" />
-                  </>
-                )}
+                {showAllCertificates ? 'Show Less' : 'Show More'}
               </Button>
             </div>
           )}
-        </section>
+        </div>
+      </section>
 
-        {/* Projects Section */}
-        <section id="projects" className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Featured Projects</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {projects.slice(0, showAllProjects ? projects.length : 2).map((project, index) => (
-              <Card key={index} className="bg-white/5 border-white/10">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base sm:text-lg font-bold text-white mb-1">{project.title}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">{project.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {project.tech.map((tech) => (
-                      <Badge key={tech} variant="outline" className="text-xs text-white">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                    <div className="flex gap-2">
-                      {project.github && (
-                        <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm">
-                            <Github className="w-4 h-4 mr-1" />
-                            Code
-                          </Button>
-                        </Link>
-                      )}
-                      {project.demo && (
-                        <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm">
-                            Live Demo
-                          </Button>
-                        </Link>
-                      )}
-                      {project.dokumentasi && (
-                        <Link href={project.dokumentasi} target="_blank" rel="noopener noreferrer">
-                          <Button variant="outline" size="sm">
-                            Dokumentasi
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                </CardContent>
-              </Card>
+      {/* Gallery Section */}
+      <section id="gallery" className="py-20 px-4 overflow-hidden bg-white/5">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Project Gallery</h2>
+          <motion.div 
+            ref={galleryRef}
+            className="cursor-grab active:cursor-grabbing"
+            whileTap={{ cursor: "grabbing" }}
+          >
+            <motion.div 
+              className="flex"
+              drag="x"
+              dragConstraints={{ right: 0, left: -galleryWidth }}
+              initial={{ x: 0 }}
+              animate={{ x: -galleryWidth }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 20,
+                  ease: "linear",
+                },
+              }}
+            >
+              {[...galleryItems, ...galleryItems].map((item, index) => (
+                <motion.div
+                  key={`${item.id}-${index}`}
+                  className="min-w-[300px] h-[200px] p-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    width={300}
+                    height={200}
+                    className="rounded-lg object-cover w-full h-full"
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-4">
+        <div className="max-w-xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Get in Touch</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              placeholder="Your Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+            />
+            <Input
+              type="email"
+              placeholder="Your Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+            />
+            <Textarea
+              placeholder="Your Message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 min-h-[150px]"
+            />
+            <Button type="submit" className="w-full bg-white text-black hover:bg-gray-200 text-lg py-3">
+              Send Message
+            </Button>
+          </form>
+          <div className="mt-12 flex justify-center space-x-6">
+            {[
+              { href: "mailto:example@email.com", icon: <Mail className="w-6 h-6" /> },
+              { href: "https://github.com", icon: <Github className="w-6 h-6" /> },
+              { href: "https://linkedin.com", icon: <Linkedin className="w-6 h-6" /> }
+            ].map((social, index) => (
+              <Link
+                key={index}
+                href={social.href}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                {social.icon}
+              </Link>
             ))}
           </div>
-          {projects.length > 2 && (
-            <div className="mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowAllProjects(!showAllProjects)}
-                className="w-full bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
-              >
-                {showAllProjects ? (
-                  <>
-                    Show Less <ChevronUp className="ml-2 h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    Show More Projects <ChevronDown className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </section>
+        </div>
+      </section>
 
-        {/* Experience Section */}
-        <section id="experience" className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Experience</h2>
-          <div className="grid gap-6">
-            {experiences.slice(0, showAllExperience ? experiences.length : 2).map((exp, index) => (
-              <div key={index} className="grid sm:grid-cols-[140px,1fr] gap-2">
-                <div className="text-sm text-muted-foreground">{exp.year}</div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-semibold mb-1">{exp.role}</h3>
-                  <Link href={exp.companyUrl} target="_blank" rel="noopener noreferrer" 
-                    className="text-sm text-muted-foreground hover:text-white transition-colors mb-1 inline-block">
-                    {exp.company}
-                  </Link>
-                  <p className="text-sm text-muted-foreground">{exp.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          {experiences.length > 2 && (
-            <div className="mt-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowAllExperience(!showAllExperience)}
-                className="w-full bg-white/10 text-white px-3 py-1 text-sm rounded-md hover:bg-white hover:text-black transition-colors"
-              >
-                {showAllExperience ? (
-                  <>
-                    Show Less <ChevronUp className="ml-2 h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    Show More Experience <ChevronDown className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </section>
-
-        {/* Get in Touch Section */}
-        <section id="contact" className="py-8 border-t border-white/10">
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${underlinedHeading}`}>Get In Touch</h2>
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-base text-white text-center max-w-xl">
-              I&apos;m always interested in hearing about new projects and opportunities. Feel free to reach out!
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link href="mailto:luqmanaldp@gmail.com">
-                <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Email Me
-                </Button>
-              </Link>
-              <Link href="https://linkedin.com/in/luqman-aldi/" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
-                  <Linkedin className="w-4 h-4 mr-2" />
-                  LinkedIn
-                </Button>
-              </Link>
-              <Link href="https://github.com/HengkerKucing" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white hover:text-black transition-colors">
-                  <Github className="w-4 h-4 mr-2" />
-                  GitHub
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="py-6 border-t border-white/10 text-center">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Luqman Aldi Prawiratama with ❤️
-          </p>
-          <nav className="mt-3">
-            <ul className="flex justify-center space-x-4">
-              {/* <li>
-                <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-white transition-colors">
-                  Terms of Service
-                </Link>
-              </li> */}
-            </ul>
-          </nav>
-        </footer>
-      </div>
+      {/* Footer */}
+      <footer className="py-8 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 text-center text-gray-400">
+          <p>© 2024 Your Name. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }
