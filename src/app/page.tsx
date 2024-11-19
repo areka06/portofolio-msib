@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
-import { Send, Code, Github, Linkedin, Mail, ExternalLink, ChevronDown, ChevronUp, Menu, X, MousePointer2, Sun, Moon, Calendar, ArrowUp, Zap, Globe, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Send, Code, Github, Linkedin, Mail, ExternalLink, ChevronDown, ChevronUp, Menu, X, MousePointer2, Sun, Moon, Calendar, ArrowUp, Zap, Globe, Shield, ChevronLeft, ChevronRight, MessageCircle, User } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
 const PDFViewer = dynamic(() => import('@react-pdf-viewer/core').then(mod => mod.Viewer), {
@@ -114,7 +114,17 @@ const newFeatures = [
 
 const pdfPortfolio = "/porto.pdf" // Replace with actual PDF path when available
 
+// Add maxPages constant (adjust the number based on your actual PDF)
+const maxPages = 10  // Set this to your PDF's total pages
+
+interface Message {
+  id: number;
+  text: string;
+  sender: 'user' | 'bot';
+}
+
 export default function Component() {
+  const [isDark, setIsDark] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [showAllCertificates, setShowAllCertificates] = useState(false)
@@ -125,6 +135,11 @@ export default function Component() {
   const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [currentMessage, setCurrentMessage] = useState('')
+  const chatRef = useRef<HTMLDivElement>(null)
 
   const galleryRef = useRef<HTMLDivElement>(null)
   const [galleryWidth, setGalleryWidth] = useState(0)
@@ -132,6 +147,9 @@ export default function Component() {
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
+
+  const [showChatButton, setShowChatButton] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -147,7 +165,7 @@ export default function Component() {
       }
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -158,11 +176,59 @@ export default function Component() {
   }, [])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 2000)
+    let progress = 0
+    const interval = setInterval(() => {
+      progress += 1
+      setLoadingProgress(Math.min(progress, 100))
+      
+      if (progress >= 100) {
+        clearInterval(interval)
+        setTimeout(() => setLoading(false), 500)
+      }
+    }, 25)
 
-    return () => clearTimeout(timer)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight
+    }
+  }, [messages])
+
+  useEffect(() => {
+    // Check if user prefers dark mode
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    setIsDark(prefersDark)
+  }, [])
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(() => {
+        const shouldShow = window.scrollY > 100;
+        setShowChatButton(shouldShow);
+      }, 150); // Meningkatkan delay debounce
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      setIsScrolled(scrollPosition > 20)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -174,14 +240,49 @@ export default function Component() {
     setMessage("")
   }
 
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!currentMessage.trim()) return
+
+    const userMessage: Message = {
+      id: Date.now(),
+      text: currentMessage,
+      sender: 'user'
+    }
+    setMessages(prev => [...prev, userMessage])
+    setCurrentMessage('')
+
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: Date.now(),
+        text: "Thanks for your message! This is a demo response.",
+        sender: 'bot'
+      }
+      setMessages(prev => [...prev, botMessage])
+    }, 1000)
+  }
+
   const navItems = ['Home', 'Projects', 'Skills', 'Certifications', 'Gallery', 'PDF Portfolio', 'Contact']
 
   const loadingText = "Front-End Developer Crafting Engaging Experiences"
   const loadingWords = loadingText.split(" ")
 
+  // Theme styles object
+  const themeStyles = {
+    background: isDark ? 'bg-black text-white' : 'bg-white text-black',
+    card: isDark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200',
+    button: isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-gray-100 hover:bg-gray-200 text-black',
+    input: isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200',
+    nav: isDark ? 'bg-black/50 border-white/10' : 'bg-white/50 border-gray-200',
+    text: {
+      primary: isDark ? 'text-white' : 'text-black',
+      secondary: isDark ? 'text-gray-400' : 'text-gray-600',
+      muted: isDark ? 'text-gray-500' : 'text-gray-400'
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Loading Animation */}
       <AnimatePresence>
         {loading && (
           <motion.div
@@ -190,16 +291,8 @@ export default function Component() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="text-center relative">
-              <motion.h1
-                className="text-6xl font-bold text-white/10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.1 }}
-                transition={{ duration: 0.5 }}
-              >
-                {loadingText}
-              </motion.h1>
-              <motion.h1 className="text-6xl font-bold relative">
+            <div className="text-center relative max-w-2xl w-full px-4">
+              <motion.h1 className="text-6xl font-bold relative mb-6">
                 {loadingWords.map((word, index) => (
                   <motion.span
                     key={index}
@@ -216,30 +309,105 @@ export default function Component() {
                   </motion.span>
                 ))}
               </motion.h1>
+              
+              {/* Smaller Animated Dots */}
+              <div className="flex justify-center items-center gap-1 mt-4">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-1 h-1 bg-white rounded-full"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                      ease: "easeInOut"
+                    }}
+                  />
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-sm bg-black/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.nav
+        initial={false}
+        animate={{
+          backgroundColor: isScrolled ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.4)',
+          backdropFilter: isScrolled ? 'blur(12px)' : 'blur(8px)',
+          width: isScrolled ? '100%' : '90%',
+          x: '-50%',
+          left: isScrolled ? '50%' : '50%',
+          top: isScrolled ? '0' : '20px',
+          borderRadius: isScrolled ? '0px' : '16px',
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut"
+        }}
+        className={`fixed z-50 transition-all duration-300
+          ${isScrolled 
+            ? 'border-b border-white/10' 
+            : 'border border-white/10 shadow-lg'}`}
+      >
+        <motion.div 
+          className="mx-auto px-4 sm:px-6 lg:px-8"
+          animate={{
+            padding: isScrolled ? "0 2rem" : "0 1.5rem",
+          }}
+          transition={{ duration: 0.3 }}
+        >
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="text-xl font-bold">
+            <Link href="/" className="text-xl font-bold text-white">
               Portfolio
             </Link>
-            <div className="hidden md:flex space-x-8">
+            <div className={`hidden md:flex space-x-8 ${
+              isScrolled ? 'py-4' : 'py-2'
+            } transition-all duration-300`}>
               {navItems.map((item) => (
-                <Link
+                <motion.div
                   key={item}
-                  href={`#${item.toLowerCase().replace(' ', '-')}`}
-                  className={`text-sm hover:text-white transition-colors ${
-                    activeSection === item.toLowerCase().replace(' ', '-') ? 'text-white' : 'text-gray-300'
-                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  {item}
-                </Link>
+                  <Link
+                    href={`#${item.toLowerCase().replace(' ', '-')}`}
+                    className={`text-sm hover:text-white transition-colors relative px-3 py-2
+                      ${activeSection === item.toLowerCase().replace(' ', '-') 
+                        ? 'text-white' 
+                        : 'text-gray-300'}`}
+                  >
+                    {item}
+                    <motion.div
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white"
+                      initial={false}
+                      animate={{
+                        opacity: activeSection === item.toLowerCase().replace(' ', '-') ? 1 : 0
+                      }}
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  </Link>
+                </motion.div>
               ))}
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className={`p-2 rounded-lg transition-colors ${
+                  isDark 
+                    ? 'bg-white/10 hover:bg-white/20' 
+                    : 'bg-black/10 hover:bg-black/20'
+                }`}
+              >
+                {isDark ? (
+                  <Sun className="w-5 h-5 text-white" />
+                ) : (
+                  <Moon className="w-5 h-5 text-black" />
+                )}
+              </button>
             </div>
             <Button
               variant="ghost"
@@ -247,32 +415,42 @@ export default function Component() {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X /> : <Menu />}
+              {mobileMenuOpen ? <X className="text-white" /> : <Menu className="text-white" />}
             </Button>
           </div>
-        </div>
-      </nav>
+        </motion.div>
+      </motion.nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-black bg-opacity-90 flex flex-col items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center"
           >
             {navItems.map((item) => (
-              <Link
+              <motion.div
                 key={item}
-                href={`#${item.toLowerCase().replace(' ', '-')}`}
-                className={`text-2xl py-2 ${
-                  activeSection === item.toLowerCase().replace(' ', '-') ? 'text-white' : 'text-gray-400'
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                whileHover={{ scale: 1.05 }}
               >
-                {item}
-              </Link>
+                <Link
+                  href={`#${item.toLowerCase().replace(' ', '-')}`}
+                  className={`text-2xl py-2 ${
+                    activeSection === item.toLowerCase().replace(' ', '-') 
+                      ? 'text-white' 
+                      : 'text-gray-400'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              </motion.div>
             ))}
           </motion.div>
         )}
@@ -612,33 +790,52 @@ export default function Component() {
       {/* PDF Portfolio Section */}
       <motion.section 
         id="pdf-portfolio" 
-        className="py-20 px-4 bg-white/5"
+        className="py-12 sm:py-16 md:py-20 px-4 bg-white/5"
         initial={{ opacity: 0 }}
         animate={{ opacity: loading ? 0 : 1 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">PDF Portfolio</h2>
-          <div className="bg-white/10 rounded-lg p-4">
-            <div className="w-full h-[800px] relative">
-              <iframe 
-                src={pdfPortfolio}
-                className="w-full h-full"
-                title="PDF Portfolio"
-              />
+        <div className="max-w-[280px] sm:max-w-md md:max-w-xl lg:max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 md:mb-12 text-center">PDF Portfolio</h2>
+          <div className="bg-white/10 rounded-lg p-2 sm:p-3 md:p-4">
+            <div className="w-full h-[40vh] sm:h-[50vh] md:h-[60vh] max-h-[600px] relative">
+              <object
+                data={`${pdfPortfolio}#page=${currentPage}&view=FitH&zoom=page-fit&scrollbar=0`}
+                type="application/pdf"
+                className="absolute inset-0 w-full h-full"
+              >
+                <iframe 
+                  src={`${pdfPortfolio}#page=${currentPage}&view=FitH&zoom=page-fit&scrollbar=0`}
+                  className="absolute inset-0 w-full h-full"
+                  title="PDF Portfolio"
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                    overflow: 'hidden'
+                  }}
+                />
+              </object>
             </div>
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 mt-3 sm:mt-4">
               <Button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                className="bg-white/10 hover:bg-white/20 text-white"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white text-sm sm:text-base"
+                disabled={currentPage <= 1}
               >
+                <ChevronLeft className="w-4 h-4 mr-1 sm:mr-2" />
                 Previous
               </Button>
+              <span className="text-white text-sm sm:text-base order-first sm:order-none">
+                Page {currentPage} of {maxPages}
+              </span>
               <Button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="bg-white/10 hover:bg-white/20 text-white"
+                onClick={() => setCurrentPage(Math.min(maxPages, currentPage + 1))}
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white text-sm sm:text-base"
+                disabled={currentPage >= maxPages}
               >
                 Next
+                <ChevronRight className="w-4 h-4 ml-1 sm:ml-2" />
               </Button>
             </div>
           </div>
@@ -705,6 +902,143 @@ export default function Component() {
           <p>© 2024 Your Name. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Chatbot Button - Minimal Dark Style */}
+      <AnimatePresence mode="wait">
+        {showChatButton && (
+          <motion.button
+            onClick={() => setIsChatOpen(true)}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+                ease: "easeOut"
+              }
+            }}
+            exit={{ 
+              opacity: 0,
+              y: 20,
+              scale: 0.95,
+              transition: {
+                duration: 0.2,
+                ease: "easeInOut"
+              }
+            }}
+            whileHover={{ 
+              scale: 1.1,
+              transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 10
+              }
+            }}
+            whileTap={{ scale: 0.9 }}
+            className="fixed bottom-6 right-6 p-4 rounded-lg shadow-lg 
+              bg-black border border-white/10 hover:bg-white/10
+              transition-all duration-300 group z-50"
+          >
+            <div className="relative">
+              <MessageCircle className="w-6 h-6 text-white transition-transform duration-500 group-hover:rotate-12" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-white animate-pulse" />
+            </div>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Chatbot Modal - Dark Theme */}
+      <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-24 right-6 w-80 sm:w-96 rounded-lg shadow-lg z-40 
+              bg-black border border-white/10"
+          >
+            {/* Chat Header */}
+            <div className="p-4 border-b border-white/10 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <div className="w-2 h-2 rounded-full bg-white absolute -right-1 -top-1" />
+                  <MessageCircle className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="font-medium text-white">Chat with me</h3>
+              </div>
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+
+            {/* Chat Messages */}
+            <div 
+              ref={chatRef}
+              className="p-0 h-96 overflow-y-auto scroll-smooth bg-black"
+            >
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`w-full ${
+                    message.sender === 'user' ? 'bg-black' : 'bg-[#0c0c0c]'
+                  }`}
+                >
+                  <div className="max-w-3xl mx-auto p-4 flex gap-6 text-base md:gap-8 md:py-6 lg:px-8">
+                    <div className="flex-shrink-0 w-[30px]">
+                      {message.sender === 'bot' ? (
+                        <div className="w-[30px] h-[30px] rounded-sm bg-[#1a1a1a] border border-[#333333] flex items-center justify-center">
+                          <MessageCircle className="w-5 h-5 text-[#888888]" />
+                        </div>
+                      ) : (
+                        <div className="w-[30px] h-[30px] rounded-sm bg-[#1a1a1a] border border-[#333333] flex items-center justify-center">
+                          <User className="w-5 h-5 text-[#888888]" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-h-[20px] flex flex-1 flex-col items-start gap-3 overflow-x-auto whitespace-pre-wrap break-words">
+                      <div className="prose prose-invert w-full text-[#d1d1d1]">
+                        {message.text}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Chat Input */}
+            <div className="border-t border-[#333333] bg-black">
+              <form 
+                onSubmit={handleSendMessage}
+                className="stretch mx-2 flex flex-row gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-3xl"
+              >
+                <div className="relative flex h-full flex-1 items-stretch md:flex-col">
+                  <div className="relative flex flex-col w-full flex-grow p-4">
+                    <Input
+                      value={currentMessage}
+                      onChange={(e) => setCurrentMessage(e.target.value)}
+                      placeholder="Send a message..."
+                      className="w-full resize-none bg-[#1a1a1a] border-[#333333] focus-visible:ring-0 focus-visible:ring-offset-0 text-[#d1d1d1] placeholder:text-[#888888] py-6 pr-12"
+                    />
+                    <Button 
+                      type="submit"
+                      size="icon"
+                      className="absolute right-6 bottom-6 bg-transparent hover:bg-transparent text-[#888888] hover:text-[#d1d1d1]"
+                      disabled={!currentMessage.trim()}
+                    >
+                      <Send className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
