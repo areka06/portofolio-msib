@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Portofolio Luqman Aldi",
-  description: "Portofolio Luqman Aldi",
+  title: "Portofolio Duta Ardhika Wahyu Nugraha",
+  description: "Portofolio Duta Ardhika Wahyu Nugraha",
 };
 
 export default function RootLayout({

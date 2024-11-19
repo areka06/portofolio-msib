@@ -6,104 +6,110 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Code, Github, Linkedin, Mail, ExternalLink, Menu, X, Zap, Globe, Shield } from 'lucide-react'
+import { Progress } from "@/components/ui/progress"
+import { Send, Code, Github, Linkedin, Mail, ExternalLink, ChevronDown, ChevronUp, Menu, X, MousePointer2, Sun, Moon, Calendar, ArrowUp, Zap, Globe, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Document, Page, pdfjs } from 'react-pdf'
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
 const MotionLink = motion(Link)
 
 const projects = [
   {
     id: 1,
-    title: "E-commerce Platform",
-    description: "A modern e-commerce solution with real-time inventory and dynamic pricing",
+    title: "Responsive E-commerce UI",
+    description: "A modern, responsive e-commerce user interface built with React and Tailwind CSS",
     image: "/placeholder.svg",
-    technologies: ['Next.js', 'React', 'Prisma', 'Stripe'],
+    technologies: ['React', 'Tailwind CSS', 'Next.js', 'Framer Motion'],
     codeLink: "#",
     demoLink: "#",
-    longDescription: "This e-commerce platform leverages Next.js for server-side rendering, React for a dynamic user interface, Prisma for efficient database management, and Stripe for secure payment processing. It features real-time inventory updates, dynamic pricing based on demand and supply, and a responsive design for optimal user experience across devices."
+    longDescription: "This project showcases a fully responsive e-commerce user interface, leveraging the power of React for component-based architecture and Tailwind CSS for rapid, utility-first styling. The UI includes features such as a dynamic product grid, responsive navigation, and animated transitions powered by Framer Motion. Next.js is utilized for server-side rendering and optimal performance."
   },
   {
     id: 2,
-    title: "AI Content Generator",
-    description: "Content generation platform powered by machine learning",
+    title: "Interactive Data Visualization Dashboard",
+    description: "A dynamic dashboard for visualizing complex datasets using D3.js and React",
     image: "/placeholder.svg",
-    technologies: ['Python', 'TensorFlow', 'React', 'FastAPI'],
+    technologies: ['React', 'D3.js', 'CSS Modules', 'Redux'],
     codeLink: "#",
     demoLink: "#",
-    longDescription: "Our AI Content Generator utilizes advanced machine learning algorithms implemented in Python and TensorFlow to create high-quality, context-aware content. The React frontend provides an intuitive interface for users to input parameters and receive generated content, while FastAPI ensures quick and efficient backend operations."
+    longDescription: "This interactive dashboard brings data to life through a variety of customizable charts and graphs. Built with React for the UI and D3.js for powerful data visualization capabilities, it allows users to explore and analyze complex datasets with ease. The project utilizes CSS Modules for scoped styling and Redux for efficient state management across the application."
   },
   {
     id: 3,
-    title: "Real-time Analytics",
-    description: "Dashboard for monitoring and analyzing user behavior",
+    title: "Progressive Web App for Task Management",
+    description: "A PWA that offers offline functionality and real-time updates for task management",
     image: "/placeholder.svg",
-    technologies: ['Next.js', 'D3.js', 'WebSocket', 'PostgreSQL'],
+    technologies: ['React', 'TypeScript', 'Service Workers', 'IndexedDB'],
     codeLink: "#",
     demoLink: "#",
-    longDescription: "This real-time analytics dashboard offers instant insights into user behavior. Built with Next.js for seamless server-side rendering and client-side navigation, it uses D3.js for creating interactive and responsive data visualizations. WebSocket connections ensure live updates, while PostgreSQL provides robust data storage and querying capabilities."
+    longDescription: "This Progressive Web App (PWA) provides a seamless task management experience, whether online or offline. Built with React and TypeScript for type safety, it leverages Service Workers for offline functionality and IndexedDB for local data storage. The app features real-time updates when online, smooth animations, and a responsive design that works across all devices."
   },
   {
     id: 4,
-    title: "Task Management App",
-    description: "Collaborative task manager with real-time updates",
+    title: "Accessibility-Focused Blog Template",
+    description: "A highly accessible and customizable blog template adhering to WCAG guidelines",
     image: "/placeholder.svg",
-    technologies: ['React', 'Firebase', 'Material-UI'],
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'ARIA'],
     codeLink: "#",
     demoLink: "#",
-    longDescription: "Our Task Management App streamlines team collaboration with real-time updates. React provides a smooth and responsive user interface, while Firebase handles real-time data synchronization and user authentication. Material-UI ensures a consistent and attractive design across the application, enhancing usability and user experience."
+    longDescription: "This project is a testament to inclusive web design, offering a blog template that prioritizes accessibility. Built with semantic HTML5, CSS3, and vanilla JavaScript, it adheres strictly to WCAG guidelines. The template includes proper ARIA labels, keyboard navigation support, high contrast modes, and is screen reader friendly. It serves as both a functional blog template and an educational resource for accessibility best practices in front-end development."
   }
 ]
 
 const skills = [
-  { name: "Frontend Development", icon: <Code size={20} />, progress: 95 },
-  { name: "Backend Architecture", icon: <Code size={20} />, progress: 85 },
-  { name: "Cloud Infrastructure", icon: <Code size={20} />, progress: 90 },
-  { name: "DevOps & CI/CD", icon: <Code size={20} />, progress: 88 },
-  { name: "UI/UX Design", icon: <Code size={20} />, progress: 80 },
-  { name: "Mobile App Development", icon: <Code size={20} />, progress: 75 },
-  { name: "Database Management", icon: <Code size={20} />, progress: 92 },
-  { name: "API Design", icon: <Code size={20} />, progress: 87 }
+  { name: "React & React Ecosystem", icon: <Code size={20} />, progress: 95 },
+  { name: "JavaScript / TypeScript", icon: <Code size={20} />, progress: 90 },
+  { name: "HTML5 & CSS3", icon: <Code size={20} />, progress: 95 },
+  { name: "Responsive Web Design", icon: <Code size={20} />, progress: 92 },
+  { name: "UI/UX Design Principles", icon: <Code size={20} />, progress: 85 },
+  { name: "Web Performance Optimization", icon: <Code size={20} />, progress: 88 },
+  { name: "Version Control (Git)", icon: <Code size={20} />, progress: 90 },
+  { name: "Frontend Build Tools", icon: <Code size={20} />, progress: 85 }
 ]
 
 const certifications = [
-  { title: "AWS Certified Solutions Architect", issuer: "Amazon Web Services", year: 2023, link: "https://www.credly.com/org/amazon-web-services/badge/aws-certified-solutions-architect-associate" },
-  { title: "Google Cloud Professional Developer", issuer: "Google Cloud", year: 2022, link: "https://www.credential.net/credential-template?key=google_cloud_professional_developer" },
-  { title: "Certified Kubernetes Administrator", issuer: "Cloud Native Computing Foundation", year: 2022, link: "https://www.cncf.io/certification/cka/" },
-  { title: "React Native Specialist", issuer: "React Native Academy", year: 2021, link: "https://reactnative.dev/docs/certificate" },
-  { title: "Advanced Machine Learning", issuer: "Stanford Online", year: 2021, link: "https://online.stanford.edu/programs/advanced-machine-learning-program" },
-  { title: "Full Stack Web Development", issuer: "FreeCodeCamp", year: 2020, link: "https://www.freecodecamp.org/certification/fcc_username/full-stack" }
+  { title: "React Developer Certification", issuer: "Meta", year: 2023, link: "https://www.coursera.org/account/accomplishments/specialization/XXXXXXXX" },
+  { title: "Front-End Web Development with React", issuer: "The Hong Kong University of Science and Technology", year: 2022, link: "https://www.coursera.org/account/accomplishments/verify/XXXXXXXX" },
+  { title: "JavaScript Algorithms and Data Structures", issuer: "freeCodeCamp", year: 2022, link: "https://www.freecodecamp.org/certification/fcc_username/javascript-algorithms-and-data-structures" },
+  { title: "Responsive Web Design", issuer: "freeCodeCamp", year: 2021, link: "https://www.freecodecamp.org/certification/fcc_username/responsive-web-design" },
+  { title: "UI/UX Design Specialization", issuer: "California Institute of the Arts", year: 2021, link: "https://www.coursera.org/account/accomplishments/specialization/XXXXXXXX" },
+  { title: "Web Accessibility", issuer: "Google", year: 2020, link: "https://www.udacity.com/course/web-accessibility--ud891" }
 ]
 
 const galleryItems = [
-  { id: 1, src: "/placeholder.svg", alt: "Project Screenshot 1" },
-  { id: 2, src: "/placeholder.svg", alt: "Project Screenshot 2" },
-  { id: 3, src: "/placeholder.svg", alt: "Project Screenshot 3" },
-  { id: 4, src: "/placeholder.svg", alt: "Project Screenshot 4" },
-  { id: 5, src: "/placeholder.svg", alt: "Project Screenshot 5" },
-  { id: 6, src: "/placeholder.svg", alt: "Project Screenshot 6" },
+  { id: 1, src: "/placeholder.svg", alt: "UI Design Screenshot 1" },
+  { id: 2, src: "/placeholder.svg", alt: "Responsive Layout Example" },
+  { id: 3, src: "/placeholder.svg", alt: "Interactive Component Demo" },
+  { id: 4, src: "/placeholder.svg", alt: "Data Visualization Chart" },
+  { id: 5, src: "/placeholder.svg", alt: "Mobile App Interface" },
+  { id: 6, src: "/placeholder.svg", alt: "Accessibility Features Showcase" },
 ]
 
 const newFeatures = [
   {
-    title: "AI-Powered Code Generation",
-    description: "Utilize cutting-edge AI to assist in code generation and problem-solving",
+    title: "Advanced React Hooks Usage",
+    description: "Implement complex state management and side effects with custom React hooks",
     icon: <Zap className="w-6 h-6" />
   },
   {
-    title: "Global Remote Collaboration",
-    description: "Seamlessly work with teams across different time zones and cultures",
+    title: "Micro-Frontend Architecture",
+    description: "Build scalable applications using micro-frontend techniques",
     icon: <Globe className="w-6 h-6" />
   },
   {
-    title: "Advanced Security Implementation",
-    description: "Implement state-of-the-art security measures in all projects",
+    title: "A11y-Driven Development",
+    description: "Prioritize accessibility from the ground up in all projects",
     icon: <Shield className="w-6 h-6" />
   }
 ]
 
-export default function EnhancedModernPortfolio() {
-  const [darkMode, setDarkMode] = useState(true)
+const pdfPortfolio = "/placeholder.pdf" // Replace with actual PDF path when available
+
+export default function Component() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [showAllCertificates, setShowAllCertificates] = useState(false)
@@ -113,6 +119,8 @@ export default function EnhancedModernPortfolio() {
   const [message, setMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null)
+  const [numPages, setNumPages] = useState<number | null>(null)
+  const [pageNumber, setPageNumber] = useState(1)
 
   const galleryRef = useRef<HTMLDivElement>(null)
   const [galleryWidth, setGalleryWidth] = useState(0)
@@ -123,7 +131,7 @@ export default function EnhancedModernPortfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'projects', 'skills', 'certifications', 'gallery', 'contact']
+      const sections = ['home', 'projects', 'skills', 'certifications', 'gallery', 'pdf-portfolio', 'contact']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -148,7 +156,7 @@ export default function EnhancedModernPortfolio() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 3000)
+    }, 2000)
 
     return () => clearTimeout(timer)
   }, [])
@@ -162,39 +170,52 @@ export default function EnhancedModernPortfolio() {
     setMessage("")
   }
 
-  const navItems = ['Home', 'Projects', 'Skills', 'Certifications', 'Gallery', 'Contact']
+  const navItems = ['Home', 'Projects', 'Skills', 'Certifications', 'Gallery', 'PDF Portfolio', 'Contact']
+
+  const loadingText = "Front-End Developer Crafting Engaging Experiences"
+  const loadingWords = loadingText.split(" ")
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    setNumPages(numPages);
+  }
 
   return (
-    <div className={`min-h-screen bg-black text-white`}>
+    <div className="min-h-screen bg-black text-white">
       {/* Loading Animation */}
       <AnimatePresence>
         {loading && (
           <motion.div
-            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md flex items-center justify-center"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
+            <div className="text-center relative">
               <motion.h1
-                className="text-6xl font-bold mb-4"
-                layout
+                className="text-6xl font-bold text-white/10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.1 }}
+                transition={{ duration: 0.5 }}
               >
-                Full-Stack Developer
+                {loadingText}
               </motion.h1>
-              <motion.p
-                className="text-xl text-gray-400"
-                layout
-              >
-                Building high-quality web applications with modern technologies and best practices.
-              </motion.p>
-            </motion.div>
+              <motion.h1 className="text-6xl font-bold relative">
+                {loadingWords.map((word, index) => (
+                  <motion.span
+                    key={index}
+                    className="inline-block mr-2"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.15,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </motion.h1>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -210,9 +231,9 @@ export default function EnhancedModernPortfolio() {
               {navItems.map((item) => (
                 <Link
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={`#${item.toLowerCase().replace(' ', '-')}`}
                   className={`text-sm hover:text-white transition-colors ${
-                    activeSection === item.toLowerCase() ? 'text-white' : 'text-gray-300'
+                    activeSection === item.toLowerCase().replace(' ', '-') ? 'text-white' : 'text-gray-300'
                   }`}
                 >
                   {item}
@@ -243,9 +264,9 @@ export default function EnhancedModernPortfolio() {
             {navItems.map((item) => (
               <Link
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={`#${item.toLowerCase().replace(' ', '-')}`}
                 className={`text-2xl py-2 ${
-                  activeSection === item.toLowerCase() ? 'text-white' : 'text-gray-400'
+                  activeSection === item.toLowerCase().replace(' ', '-') ? 'text-white' : 'text-gray-400'
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -261,31 +282,31 @@ export default function EnhancedModernPortfolio() {
         id="home"
         className="pt-32 pb-16 px-4"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
       >
         <div className="max-w-4xl mx-auto text-center">
           <motion.h1 
             className="text-5xl sm:text-6xl font-bold tracking-tight"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.5 }}
+            animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
           >
-            Full-Stack Developer
+            Front-End Developer
           </motion.h1>
           <motion.p 
             className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.7 }}
+            animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
+            transition={{ duration: 0.5, delay: 0.9 }}
           >
-            Building high-quality web applications with modern technologies and best practices.
+            Crafting engaging user experiences with modern web technologies
           </motion.p>
           <motion.div 
             className="mt-10 flex justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.9 }}
+            animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
+            transition={{ duration: 0.5, delay: 1.1 }}
           >
             <Button className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg">
               View Projects
@@ -298,9 +319,14 @@ export default function EnhancedModernPortfolio() {
       </motion.section>
 
       {/* New Features Section */}
-      <section className="py-20 px-4 bg-white/5">
+      <motion.section 
+        className="py-20 px-4 bg-white/5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">New Features</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center">Specialized Skills</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {newFeatures.map((feature, index) => (
               <motion.div
@@ -319,10 +345,16 @@ export default function EnhancedModernPortfolio() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-20 px-4">
+      <motion.section 
+        id="projects" 
+        className="py-20 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -371,7 +403,7 @@ export default function EnhancedModernPortfolio() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Project Detail Modal */}
       <AnimatePresence>
@@ -390,43 +422,49 @@ export default function EnhancedModernPortfolio() {
               onClick={() => setSelectedProject(null)}
             />
             <motion.div
-              className="bg-black border border-white/10 rounded-lg p-6 max-w-2xl w-full relative z-10"
+              className="bg-black border border-white/10 rounded-lg p-6 max-w-4xl w-full relative z-10"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              <h2 className="text-2xl font-bold mb-4">{selectedProject.title}</h2>
-              <Image
-                src={selectedProject.image}
-                alt={selectedProject.title}
-                width={600}
-                height={400}
-                className="rounded-lg mb-4 object-cover w-full"
-              />
-              <p className="text-gray-300 mb-4">{selectedProject.longDescription}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {selectedProject.technologies.map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="flex justify-between">
-                <Link
-                  href={selectedProject.demoLink}
-                  className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
-                >
-                  <ExternalLink className="w-4 h-4" /> View Demo
-                </Link>
-                <Link
-                  href={selectedProject.codeLink}
-                  className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
-                >
-                  <Code className="w-4 h-4" /> View Code
-                </Link>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/2">
+                  <Image
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    width={600}
+                    height={400}
+                    className="rounded-lg object-cover w-full h-64 md:h-full"
+                  />
+                </div>
+                <div className="md:w-1/2">
+                  <h2 className="text-2xl font-bold mb-4">{selectedProject.title}</h2>
+                  <p className="text-gray-300 mb-4">{selectedProject.longDescription}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedProject.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex justify-between">
+                    <Link
+                      href={selectedProject.demoLink}
+                      className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
+                    >
+                      <ExternalLink className="w-4 h-4" /> View Demo
+                    </Link>
+                    <Link
+                      href={selectedProject.codeLink}
+                      className="text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md inline-flex items-center gap-1"
+                    >
+                      <Code className="w-4 h-4" /> View Code
+                    </Link>
+                  </div>
+                </div>
               </div>
               <Button
                 className="absolute top-2 right-2 text-gray-400 hover:text-white"
@@ -442,7 +480,13 @@ export default function EnhancedModernPortfolio() {
       </AnimatePresence>
 
       {/* Skills Section */}
-      <section id="skills" className="py-20 px-4 bg-white/5">
+      <motion.section 
+        id="skills" 
+        className="py-20 px-4 bg-white/5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Skills & Expertise</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -470,10 +514,16 @@ export default function EnhancedModernPortfolio() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Certifications Section */}
-      <section id="certifications" className="py-20 px-4">
+      <motion.section 
+        id="certifications" 
+        className="py-20 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Certifications</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -510,21 +560,24 @@ export default function EnhancedModernPortfolio() {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 px-4 overflow-hidden bg-white/5">
+      <motion.section 
+        id="gallery" 
+        className="py-20 px-4 overflow-hidden bg-white/5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Project Gallery</h2>
           <motion.div 
             ref={galleryRef}
-            className="cursor-grab active:cursor-grabbing"
-            whileTap={{ cursor: "grabbing" }}
+            className="cursor-default"
           >
             <motion.div 
               className="flex"
-              drag="x"
-              dragConstraints={{ right: 0, left: -galleryWidth }}
               initial={{ x: 0 }}
               animate={{ x: -galleryWidth }}
               transition={{
@@ -540,8 +593,6 @@ export default function EnhancedModernPortfolio() {
                 <motion.div
                   key={`${item.id}-${index}`}
                   className="min-w-[300px] h-[200px] p-2"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <Image
                     src={item.src}
@@ -555,10 +606,69 @@ export default function EnhancedModernPortfolio() {
             </motion.div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
+
+      {/* PDF Portfolio Section */}
+      <motion.section 
+        id="pdf-portfolio" 
+        className="py-20 px-4 bg-white/5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">PDF Portfolio</h2>
+          <div className="bg-white/10 rounded-lg p-4">
+            <Document
+              file={pdfPortfolio}
+              onLoadSuccess={onDocumentLoadSuccess}
+              className="mx-auto"
+              error={
+                <div className="text-center text-white py-10">
+                  <p>No PDF content available.</p>
+                  <p>Please check back later for updates.</p>
+                </div>
+              }
+            >
+              {numPages && numPages > 0 ? (
+                <Page pageNumber={pageNumber} />
+              ) : (
+                <div className="text-center text-white py-10">
+                  <p>Example PDF content would be displayed here.</p>
+                </div>
+              )}
+            </Document>
+            <div className="flex justify-between items-center mt-4">
+              <Button
+                onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
+                disabled={pageNumber <= 1 || numPages === 0}
+                className="bg-white/10 hover:bg-white/20 text-white"
+              >
+                Previous
+              </Button>
+              <p className="text-white">
+                Page {numPages ? pageNumber : 1} of {numPages ?? 0}
+              </p>
+              <Button
+                onClick={() => setPageNumber(Math.min(numPages ?? 0, pageNumber + 1))}
+                disabled={pageNumber >= (numPages ?? 0) || numPages === 0}
+                className="bg-white/10 hover:bg-white/20 text-white"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      </motion.section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4">
+      <motion.section 
+        id="contact" 
+        className="py-20 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loading ? 0 : 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
         <div className="max-w-xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Get in Touch</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -604,7 +714,7 @@ export default function EnhancedModernPortfolio() {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="py-8 border-t border-white/10">
