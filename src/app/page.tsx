@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,9 +11,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { Send, Code, Github, Linkedin, Mail, ExternalLink, ChevronDown, ChevronUp, Menu, X, MousePointer2, Sun, Moon, Calendar, ArrowUp, Zap, Globe, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
-import { Document, Page, pdfjs } from 'react-pdf'
+import dynamic from 'next/dynamic'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+const PDFViewer = dynamic(() => import('@react-pdf-viewer/core').then(mod => mod.Viewer), {
+  ssr: false,
+  loading: () => <div>Loading PDF viewer...</div>
+})
+
+import '@react-pdf-viewer/core/lib/styles/index.css'
 
 const MotionLink = motion(Link)
 
@@ -107,7 +112,7 @@ const newFeatures = [
   }
 ]
 
-const pdfPortfolio = "/placeholder.pdf" // Replace with actual PDF path when available
+const pdfPortfolio = "/porto.pdf" // Replace with actual PDF path when available
 
 export default function Component() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -119,8 +124,7 @@ export default function Component() {
   const [message, setMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null)
-  const [numPages, setNumPages] = useState<number | null>(null)
-  const [pageNumber, setPageNumber] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const galleryRef = useRef<HTMLDivElement>(null)
   const [galleryWidth, setGalleryWidth] = useState(0)
@@ -174,9 +178,6 @@ export default function Component() {
 
   const loadingText = "Front-End Developer Crafting Engaging Experiences"
   const loadingWords = loadingText.split(" ")
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    setNumPages(numPages);
-  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -619,39 +620,22 @@ export default function Component() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">PDF Portfolio</h2>
           <div className="bg-white/10 rounded-lg p-4">
-            <Document
-              file={pdfPortfolio}
-              onLoadSuccess={onDocumentLoadSuccess}
-              className="mx-auto"
-              error={
-                <div className="text-center text-white py-10">
-                  <p>No PDF content available.</p>
-                  <p>Please check back later for updates.</p>
-                </div>
-              }
-            >
-              {numPages && numPages > 0 ? (
-                <Page pageNumber={pageNumber} />
-              ) : (
-                <div className="text-center text-white py-10">
-                  <p>Example PDF content would be displayed here.</p>
-                </div>
-              )}
-            </Document>
+            <div className="w-full h-[800px] relative">
+              <iframe 
+                src={pdfPortfolio}
+                className="w-full h-full"
+                title="PDF Portfolio"
+              />
+            </div>
             <div className="flex justify-between items-center mt-4">
               <Button
-                onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
-                disabled={pageNumber <= 1 || numPages === 0}
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 className="bg-white/10 hover:bg-white/20 text-white"
               >
                 Previous
               </Button>
-              <p className="text-white">
-                Page {numPages ? pageNumber : 1} of {numPages ?? 0}
-              </p>
               <Button
-                onClick={() => setPageNumber(Math.min(numPages ?? 0, pageNumber + 1))}
-                disabled={pageNumber >= (numPages ?? 0) || numPages === 0}
+                onClick={() => setCurrentPage(currentPage + 1)}
                 className="bg-white/10 hover:bg-white/20 text-white"
               >
                 Next
@@ -707,8 +691,7 @@ export default function Component() {
               <Link
                 key={index}
                 href={social.href}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+                className="text-gray-400 hover:text-white transition-colors">
                 {social.icon}
               </Link>
             ))}

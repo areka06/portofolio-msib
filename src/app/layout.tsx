@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: "Portofolio Duta Ardhika Wahyu Nugraha",
 };
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export default function RootLayout({
   children,
 }: Readonly<{
